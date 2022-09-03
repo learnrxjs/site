@@ -1,0 +1,14 @@
+<script lang="ts">
+  type IconNames = "menu"
+  const icons: Record<IconNames, string> = {
+    "menu": `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+      <path fill="none" d="M0 0h256v256H0z"/>
+      <path stroke="var(--icon-color, currentColor)" stroke-linecap="round" stroke-linejoin="round" stroke-width="16" d="M40 128h176M40 64h176M40 192h176"/>
+    </svg>`
+  }
+
+  export let name: IconNames;
+  $: iconHtml = Reflect.get(icons, name)
+</script>
+
+{@html iconHtml}

@@ -1,0 +1,21 @@
+---
+import Header from "../../components/header.svelte";
+import BaseLayout from "../../layouts/base.layout.astro";
+
+interface Props {
+  title: string
+}
+
+const { title } = Astro.props as Props
+---
+
+<BaseLayout title={title}>
+  <Header></Header>
+  <div>
+    <main class="py-12 px-8">
+      <div class="wrap">
+        
+      </div>
+    </main>
+  </div>
+</BaseLayout>

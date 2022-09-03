@@ -1,0 +1,27 @@
+---
+import BaseLayout from "./base.layout.astro"
+import Header from "../components/header.svelte"
+
+interface Props {
+  title: string
+}
+
+const { title } = Astro.props as Props
+---
+
+<BaseLayout title={title}>
+  <Header></Header>
+  <div>
+    <main class="grid grid-cols-[200px_1fr] items-stretch justify-center gap-4 px-8">
+      <aside class="hidden sm:block border-r py-12 pr-8">
+        <div class="sticky top-4">
+          <slot name="sidebar" />
+        </div>
+      </aside>
+  
+      <div class="py-12 px-16">
+        <slot name="content" />  
+      </div>
+    </main>
+  </div>
+</BaseLayout>
