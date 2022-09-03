@@ -7,8 +7,6 @@ status: STABLE
 kind: FUNCTION
 ---
 
-# combineLatest
-
 ## Сигнатура
 
 ```typescript

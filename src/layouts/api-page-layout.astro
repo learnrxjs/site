@@ -6,27 +6,74 @@ interface Props {
   title: string
 }
 
-const { title } = Astro.props as Props
+const { title, headings } = Astro.props as Props
 ---
 
 <BaseLayout title={title}>
   <Header></Header>
+
   <div>
     <div class="wrap">
-      <main class="grid grid-cols-[200px_1fr_200px] w-full items-stretch justify-center gap-4 px-8">
+      <main class="grid grid-cols-[1fr_1fr_1fr] items-stretch justify-center">
         <aside class="hidden sm:block border-r py-12 pr-8">
-          <div class="sticky top-4">
-            test
+          <div>
+            <ul class="flex flex-col gap-2">
+              <li>
+                <details open>
+                  <summary class="font-bold uppercase select-none cursor-pointer">Обзор</summary>
+                  
+                  <ul>
+                    <li><a class="sidebar-link is-active" href="">Потоки</a></li>
+                    <li><a class="sidebar-link" href="">Наблюдатель</a></li>
+                  </ul>
+                </details>
+              </li>
+
+              <li>
+                <a class="sidebar-link" href="">Установка</a>
+              </li>
+            </ul>
           </div>
         </aside>
     
         <div class="py-12 px-16">
-          <slot />
+          <div class="max-w-[70ch]">
+            <slot />
+          </div>
         </div>
-  
+
         <aside class="hidden sm:block border-l py-12 pl-8">
-          <div class="sticky top-4">
-            test
+          <div class="sticky top-4 flex flex-col gap-6 text-gray-600">
+            <div>
+              <h2 class="font-bold uppercase mb-2 text-black">Содержание</h2>
+              <ul class="flex flex-col gap-1">
+                {
+                  headings.map((header: any) => {
+                    return <li class="leading-none" style={{ "--level": header.depth - 2, "padding-inline-start": "calc(var(--level) * 1.5rem)" }}>
+                      <a class="like-link" href={`#${ header.slug }`}>{header.text}</a>
+                    </li>
+                  })
+                }
+              </ul>
+            </div>
+
+            <div>
+              <h2 class="font-bold uppercase mb-2 text-black">Вклад</h2>
+              
+              <ul>
+                <li><a class="like-link" href="">Редактировать страницу</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <h2 class="font-bold uppercase mb-2 text-black">Сообщество</h2>
+
+              <ul>
+                <li><a class="like-link" href="">Присоединяйтесь к нам в телеграм-чате</a></li>
+                <li><a class="like-link" href="">Читайте наш блог</a></li>
+                <li><a class="like-link" href="">Гитхаб документации</a></li>
+              </ul>
+            </div>
           </div>
         </aside>
       </main>
