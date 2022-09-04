@@ -1,82 +1,157 @@
 ---
 import BaseLayout from "./base.layout.astro"
 import Header from "../components/header.svelte"
+import Footer from "../components/footer.svelte"
 
 interface Props {
   title: string
 }
 
+interface MainMenuItem {
+  title: string
+  url: string
+}
+
+interface MainMenuGroup {
+  title: string
+  items: MainMenuItem[]
+}
+
+const menu: (MainMenuGroup | MainMenuItem)[] = [
+  {
+    title: "Обзор",
+    items: [
+      {
+        title: "Введение",
+        url: "/guide/overview"
+      },
+      {
+        title: "Потоки",
+        url: "/guide/observables"
+      },
+      {
+        title: "Наблюдатель",
+        url: "/guide/observer"
+      },
+      {
+        title: "Операторы",
+        url: "/guide/operators"
+      },
+      {
+        title: "Подписки",
+        url: "/guide/subscription"
+      },
+      {
+        title: "Сабжекты",
+        url: "/guide/subject"
+      },
+      {
+        title: "Шедулеры",
+        url: "/overview/schediler"
+      },
+      {
+        title: "Marble тестирование",
+        url: "/guide/testing/marble-testing"
+      }
+    ]
+  },
+  {
+    title: "Установка",
+    url: "/guide/installation"
+  },
+  {
+    title: "Импортинг",
+    url: "/guide/importing"
+  }
+]
+
 const { title, headings } = Astro.props as Props
+const currentPagePathname = new URL(Astro.request.url).pathname
 ---
 
 <BaseLayout title={title}>
   <Header></Header>
 
-  <div>
-    <div class="wrap">
-      <main class="grid grid-cols-[1fr_1fr_1fr] items-stretch justify-center">
-        <aside class="hidden sm:block border-r py-12 pr-8">
-          <div>
-            <ul class="flex flex-col gap-2">
-              <li>
-                <details open>
-                  <summary class="font-bold uppercase select-none cursor-pointer">Обзор</summary>
-                  
-                  <ul>
-                    <li><a class="sidebar-link is-active" href="">Потоки</a></li>
-                    <li><a class="sidebar-link" href="">Наблюдатель</a></li>
-                  </ul>
-                </details>
-              </li>
+  <div class="wrap">
+    <main class="grid grid-cols-[1fr_1fr_1fr] items-stretch justify-center">
+      <aside class="hidden sm:block border-r py-12 pr-8">
+        <div>
+          <ul class="flex flex-col gap-2">
+            {
+              menu.map((item: any) => {
+                const isGroup: boolean = Reflect.has(item, "items")
+                
+                if (isGroup) {
+                  return <li>
+                    <details open>
+                      <summary class="font-bold uppercase select-none cursor-pointer">{item.title}</summary>
+                      
+                      <ul>
+                        {
+                          item.items.map((link: any) => {
+                            return <li><a
+                              class:list={[ "sidebar-link", { "is-active": link.url.endsWith(currentPagePathname) } ]}
+                              href={link.url}
+                            >{link.title}</a></li>
+                          })
+                        }
+                      </ul>
+                    </details>
+                  </li>
+                }
 
-              <li>
-                <a class="sidebar-link" href="">Установка</a>
-              </li>
+                return <li>
+                  <a class="sidebar-link" href={item.url}>{ item.title }</a>
+                </li>
+              })
+            }
+          </ul>
+        </div>
+      </aside>
+  
+      <div class="py-12 px-16">
+        <div class="max-w-[70ch]">
+          <slot />
+        </div>
+      </div>
+
+      <aside class="hidden sm:block border-l py-12 pl-8">
+        <div class="sticky top-4 flex flex-col gap-6 text-gray-600">
+          <div>
+            <h2 class="font-bold uppercase mb-2 text-black">Содержание</h2>
+            <ul class="flex flex-col gap-1">
+              {
+                headings.map((header: any) => {
+                  return <li class="leading-none" style={{ "--level": header.depth - 2, "padding-inline-start": "calc(var(--level) * 1.5rem)" }}>
+                    <a class="like-link" href={`#${ header.slug }`}>{header.text}</a>
+                  </li>
+                })
+              }
             </ul>
           </div>
-        </aside>
-    
-        <div class="py-12 px-16">
-          <div class="max-w-[70ch]">
-            <slot />
+
+          <div>
+            <h2 class="font-bold uppercase mb-2 text-black">Вклад</h2>
+            
+            <ul>
+              <li><a class="like-link" href="">Редактировать страницу</a></li>
+              <li><a class="like-link" href="">Помочь с переводом</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h2 class="font-bold uppercase mb-2 text-black">Сообщество</h2>
+
+            <ul>
+              <li><a class="like-link" href="">Присоединяйтесь к нам в телеграм-чате</a></li>
+              <li><a class="like-link" href="">Читайте наш блог</a></li>
+              <li><a class="like-link" href="">Гитхаб документации</a></li>
+            </ul>
           </div>
         </div>
-
-        <aside class="hidden sm:block border-l py-12 pl-8">
-          <div class="sticky top-4 flex flex-col gap-6 text-gray-600">
-            <div>
-              <h2 class="font-bold uppercase mb-2 text-black">Содержание</h2>
-              <ul class="flex flex-col gap-1">
-                {
-                  headings.map((header: any) => {
-                    return <li class="leading-none" style={{ "--level": header.depth - 2, "padding-inline-start": "calc(var(--level) * 1.5rem)" }}>
-                      <a class="like-link" href={`#${ header.slug }`}>{header.text}</a>
-                    </li>
-                  })
-                }
-              </ul>
-            </div>
-
-            <div>
-              <h2 class="font-bold uppercase mb-2 text-black">Вклад</h2>
-              
-              <ul>
-                <li><a class="like-link" href="">Редактировать страницу</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h2 class="font-bold uppercase mb-2 text-black">Сообщество</h2>
-
-              <ul>
-                <li><a class="like-link" href="">Присоединяйтесь к нам в телеграм-чате</a></li>
-                <li><a class="like-link" href="">Читайте наш блог</a></li>
-                <li><a class="like-link" href="">Гитхаб документации</a></li>
-              </ul>
-            </div>
-          </div>
-        </aside>
-      </main>
-    </div>
+      </aside>
+    </main>
   </div>
+
+  <Footer></Footer>
 </BaseLayout>
