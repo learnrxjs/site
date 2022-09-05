@@ -28,3 +28,7 @@
 .sidebar-link.is-active {
   @apply bg-pink-200 font-bold text-black
 }
+
+.header-anchor {
+  @apply no-underline
+}

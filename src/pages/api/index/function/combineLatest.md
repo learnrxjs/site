@@ -1,6 +1,6 @@
 ---
 title: combineLatest
-layout: ../../../../layouts/api-page-layout.astro
+layout: ../../../../layouts/api-entity-layout.astro
 package: index
 isOperator: false
 status: STABLE

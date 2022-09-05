@@ -1,0 +1,222 @@
+---
+import { When, For } from "@astropub/flow";
+import BaseLayout from "./base.layout.astro";
+import Header from "../components/header.svelte";
+import Footer from "../components/footer.svelte";
+import TranslateString from "../components/translate-string.svelte";
+
+interface MainMenuItem {
+  title: string;
+  url: string;
+}
+
+interface MainMenuGroup {
+  title: string;
+  items: MainMenuItem[];
+}
+
+const menu: (MainMenuGroup | MainMenuItem)[] = [
+  {
+    title: "Обзор",
+    items: [
+      {
+        title: "Введение",
+        url: "/guide/overview",
+      },
+      {
+        title: "Потоки",
+        url: "/guide/observables",
+      },
+      {
+        title: "Наблюдатель",
+        url: "/guide/observer",
+      },
+      {
+        title: "Операторы",
+        url: "/guide/operators",
+      },
+      {
+        title: "Подписки",
+        url: "/guide/subscription",
+      },
+      {
+        title: "Сабжекты",
+        url: "/guide/subject",
+      },
+      {
+        title: "Шедулеры",
+        url: "/overview/schediler",
+      },
+      {
+        title: "Marble тестирование",
+        url: "/guide/testing/marble-testing",
+      },
+    ],
+  },
+  {
+    title: "Установка",
+    url: "/guide/installation",
+  },
+  {
+    title: "Импортинг",
+    url: "/guide/importing",
+  },
+];
+
+const { title, headings, frontmatter } = Astro.props;
+const currentPagePathname = new URL(Astro.request.url).pathname;
+---
+
+<BaseLayout title={title}>
+  <Header />
+
+  <div class="wrap">
+    <main
+      class="sm:grid sm:grid-cols-[1fr_1fr_1fr] items-stretch justify-center"
+    >
+      <aside class="hidden sm:block border-r py-12 pr-8">
+        <div>
+          <ul class="flex flex-col gap-2">
+            <For of={menu}>
+              {
+                (item: any) => {
+                  const isGroup: boolean = Reflect.has(item, "items");
+
+                  if (isGroup) {
+                    return (
+                      <li>
+                        <details open>
+                          <summary class="font-bold uppercase select-none cursor-pointer">
+                            {item.title}
+                          </summary>
+
+                          <ul>
+                            <For of={item.items}>
+                              {(link: any) => {
+                                return (
+                                  <li>
+                                    <a
+                                      class:list={[
+                                        "sidebar-link",
+                                        {
+                                          "is-active":
+                                            link.url.endsWith(
+                                              currentPagePathname
+                                            ),
+                                        },
+                                      ]}
+                                      href={link.url}
+                                    >
+                                      {link.title}
+                                    </a>
+                                  </li>
+                                );
+                              }}
+                            </For>
+                          </ul>
+                        </details>
+                      </li>
+                    );
+                  }
+
+                  return (
+                    <li>
+                      <a class="sidebar-link" href={item.url}>
+                        {item.title}
+                      </a>
+                    </li>
+                  );
+                }
+              }
+            </For>
+          </ul>
+        </div>
+      </aside>
+
+      <div class="p-4 sm:py-12 sm:px-16">
+        <article class="max-w-[70ch]">
+          <div class="flex flex-col gap-2 mb-8">
+            <h1 class="text-4xl font-bold">{frontmatter.title}</h1>
+            <ul class="flex gap-2 text-xs">
+              <li>
+                <span
+                  class="bg-green-700 text-white px-2 py-1 rounded select-none uppercase"
+                >
+                  <TranslateString key={`entities.kind.${frontmatter.kind.toLowerCase()}`} />
+                </span>
+              </li>
+              <li>
+                <span
+                  class="text-white px-2 py-1 rounded select-none bg-zinc-500 uppercase"
+                  ><TranslateString key={`entities.status.${frontmatter.status.toLowerCase()}`} /></span>
+              </li>
+              <When {frontmatter.isOperator}>
+                <li>
+                  <span class="text-white px-2 py-1 rounded select-none bg-red-500 uppercase">
+                    <TranslateString key="entities.status.operator" />
+                  </span>
+                </li>
+              </When>
+            </ul>
+          </div>
+
+          <div class="prose dark:prose-invert prose-a:break-words">
+            <slot />
+          </div>
+        </article>
+      </div>
+
+      <aside class="hidden sm:block border-l py-12 pl-8">
+        <div class="sticky top-6 flex flex-col gap-6 text-gray-600">
+          <div>
+            <h2 class="font-bold uppercase mb-2 text-black">Содержание</h2>
+            <ul class="flex flex-col gap-1">
+              {
+                headings.map((header: any) => {
+                  return (
+                    <li
+                      class="leading-none"
+                      style={{
+                        "--level": header.depth - 2,
+                        "padding-inline-start": "calc(var(--level) * 1.5rem)",
+                      }}
+                    >
+                      <a class="like-link" href={`#${header.slug}`}>
+                        {header.text.replace(" ⌗", "")}
+                      </a>
+                    </li>
+                  );
+                })
+              }
+            </ul>
+          </div>
+
+          <div>
+            <h2 class="font-bold uppercase mb-2 text-black">Вклад</h2>
+
+            <ul>
+              <li><a class="like-link" href="">Редактировать страницу</a></li>
+              <li><a class="like-link" href="">Помочь с переводом</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h2 class="font-bold uppercase mb-2 text-black">Сообщество</h2>
+
+            <ul>
+              <li>
+                <a class="like-link" href=""
+                  >Присоединяйтесь к нам в телеграм-чате</a
+                >
+              </li>
+              <li><a class="like-link" href="">Читайте наш блог</a></li>
+              <li><a class="like-link" href="">Гитхаб документации</a></li>
+            </ul>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <Footer />
+</BaseLayout>

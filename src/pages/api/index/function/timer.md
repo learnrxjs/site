@@ -1,4 +1,11 @@
-# timer
+---
+title: timer
+layout: ../../../../layouts/api-entity-layout.astro
+package: index
+isOperator: false
+status: STABLE
+kind: FUNCTION
+---
 
 ## Сигнатура
 

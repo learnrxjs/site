@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "astro dev",
     "start": "astro dev",
+    "start:open": "astro dev --host",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
@@ -12,7 +12,12 @@
   "devDependencies": {
     "@astrojs/svelte": "^1.0.0",
     "@astrojs/tailwind": "^1.0.0",
+    "@astropub/flow": "^0.3.1",
+    "@tailwindcss/typography": "^0.5.7",
+    "@types/slug": "^5.0.3",
     "astro": "^1.1.2",
-    "svelte": "^3.49.0"
+    "slug": "^8.0.0",
+    "svelte": "^3.49.0",
+    "unist-util-visit": "^4.1.1"
   }
 }
