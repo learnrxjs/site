@@ -71,7 +71,7 @@
 
 <main class="py-12 px-8">
   <div class="wrap flex flex-col gap-4">
-    <header class="flex gap-4">
+    <header class="flex gap-4 flex-col sm:flex-row">
       <select
         use:connectWriteable={kind}
         class="block rounded-md bg-gray-200 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 px-3 py-2"
@@ -95,13 +95,14 @@
       {#if $filteredApiPackages.length <= 0}
         <p>Совпадений нет!</p>
       {/if}
+
       {#each $filteredApiPackages as packageInstance}
         <div>
           <h2 class="font-bold text-2xl mb-4">{packageInstance.name}</h2>
 
-          <ul class="flex gap-4">
+          <ul class="flex gap-2 flex-col sm:flex-row sm:gap-4">
             {#each packageInstance.entities as entity}
-              <li class="w-1/3">
+              <li class="w-full sm:w-1/3">
                 <a href={entity.url} class="like-link flex items-center gap-1 w-min">
                   <ApiEntityKindIcon entityKind={entity.kind} />
                   <span>{entity.title}</span>
