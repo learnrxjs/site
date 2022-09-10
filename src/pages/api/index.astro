@@ -1,21 +1,17 @@
 ---
+import Footer from "../../components/footer.svelte";
 import Header from "../../components/header.svelte";
+import ApiIndexPage from "../../components/api-index-page.svelte";
 import BaseLayout from "../../layouts/base.layout.astro";
+import type { ApiEntity } from "../../models";
+import { makeApiEntity, packApiEntities } from "../../lib";
 
-interface Props {
-  title: string
-}
-
-const { title } = Astro.props as Props
+const entityFiles = (await Astro.glob<ApiEntity>("./**/*.md")).map((f) => makeApiEntity(f));
+const apiPackages = packApiEntities(entityFiles);
 ---
 
-<BaseLayout title={title}>
-  <Header></Header>
-  <div>
-    <main class="py-12 px-8">
-      <div class="wrap">
-        
-      </div>
-    </main>
-  </div>
+<BaseLayout title="API">
+  <Header />
+  <ApiIndexPage apiPackages={apiPackages} client:load />
+  <Footer />
 </BaseLayout>

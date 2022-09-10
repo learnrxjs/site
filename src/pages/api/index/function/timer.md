@@ -1,7 +1,7 @@
 ---
 title: timer
 layout: ../../../../layouts/api-entity-layout.astro
-package: index
+packageName: index
 isOperator: false
 status: STABLE
 kind: FUNCTION

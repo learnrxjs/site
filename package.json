@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "astro dev",
+    "start": "astro dev --reload",
     "start:open": "astro dev --host",
     "build": "astro build",
     "preview": "astro preview",

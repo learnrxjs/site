@@ -7,7 +7,8 @@
         enum: "Перечисление",
         function: "Функция",
         interface: "Интерфейс",
-        type_alias: "Тип-алиас"
+        type_alias: "Тип-алиас",
+        all: "Все"
       },
       status: {
         stable: "Стабильный",
@@ -39,4 +40,4 @@
   $: result = getValueByKeyPath(translates, key)
 </script>
 
-<span>{result}</span>
+{result}
