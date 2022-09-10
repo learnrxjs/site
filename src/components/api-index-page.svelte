@@ -92,6 +92,9 @@
     </header>
 
     <div>
+      {#if $filteredApiPackages.length <= 0}
+        <p>Совпадений нет!</p>
+      {/if}
       {#each $filteredApiPackages as packageInstance}
         <div>
           <h2 class="font-bold text-2xl mb-4">{packageInstance.name}</h2>

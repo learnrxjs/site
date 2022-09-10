@@ -3,10 +3,6 @@ import { packApiEntities } from "./pack-api-entities"
 import { unpackApiEntities } from "./unpack-api-entites"
 
 export function filterApiEntites(apiPackages: readonly ApiPackage[], titleSearchValue: string, kind: ApiEntityKindForView, caseSesnetive: boolean = false) {
-  if (titleSearchValue.length <= 0) {
-    return apiPackages
-  }
-
   const entities: readonly ApiEntity[] = unpackApiEntities(apiPackages)
 
   const entitiesByPredicate: readonly ApiEntity[] = entities.filter((entity: ApiEntity) => {
