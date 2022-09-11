@@ -1,85 +1,18 @@
 ---
-import BaseLayout from "./base.layout.astro";
-import Header from "../components/header.svelte";
-import Footer from "../components/footer.svelte";
 import MenuSidebar from "../components/menu-sidebar.svelte";
-import type { MenuItem } from "../models";
+import PageLayout from "./page-layout.astro";
 
-const menuItems: readonly MenuItem[] = [
-  {
-    type: "GROUP",
-    title: "Обзор",
-    links: [
-      {
-        type: "LINK",
-        title: "Введение",
-        url: "/guide/overview",
-      },
-      {
-        type: "LINK",
-        title: "Потоки",
-        url: "/guide/observables",
-      },
-      {
-        type: "LINK",
-        title: "Наблюдатель",
-        url: "/guide/observer",
-      },
-      {
-        type: "LINK",
-        title: "Операторы",
-        url: "/guide/operators",
-      },
-      {
-        type: "LINK",
-        title: "Подписки",
-        url: "/guide/subscription",
-      },
-      {
-        type: "LINK",
-        title: "Сабжекты",
-        url: "/guide/subject",
-      },
-      {
-        type: "LINK",
-        title: "Шедулеры",
-        url: "/guide/schediler",
-      },
-      {
-        type: "LINK",
-        title: "Marble тестирование",
-        url: "/guide/testing/marble-testing",
-      },
-    ],
-  },
-  {
-    type: "LINK",
-    title: "Установка",
-    url: "/guide/installation",
-  },
-  {
-    type: "LINK",
-    title: "Импортинг",
-    url: "/guide/importing",
-  },
-];
-
-const { frontmatter, headings } = Astro.props;
+const { frontmatter, headings, title } = Astro.props;
 const currentPagePathname = new URL(Astro.request.url).pathname;
 ---
 
-<BaseLayout title={frontmatter.title}>
-  <Header />
-
+<PageLayout title={title}>
   <div class="wrap">
     <main
       class="sm:grid sm:grid-cols-[1fr_1fr_1fr] items-stretch justify-center"
     >
       <aside class="hidden sm:block border-r py-12 pr-8">
-        <MenuSidebar
-          menuItems={menuItems}
-          currentPagePathname={currentPagePathname}
-        />
+        <MenuSidebar currentPagePathname={currentPagePathname}/>
       </aside>
 
       <div class="p-4 sm:py-12 sm:px-16">
@@ -145,6 +78,4 @@ const currentPagePathname = new URL(Astro.request.url).pathname;
       </aside>
     </main>
   </div>
-
-  <Footer />
-</BaseLayout>
+</PageLayout>

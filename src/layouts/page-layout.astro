@@ -1,0 +1,14 @@
+---
+import Footer from "../components/footer.svelte";
+import Header from "../components/header.svelte";
+import BaseLayout from "./base.layout.astro";
+
+const { title } = Astro.props
+const currentPagePathname = new URL(Astro.request.url).pathname;
+---
+
+<BaseLayout title={title}>
+  <Header currentPagePathname={currentPagePathname} />
+  <slot />
+  <Footer />
+</BaseLayout>

@@ -1,15 +1,8 @@
 ---
-import Footer from "../components/footer.svelte";
-import Header from "../components/header.svelte";
-import BaseLayout from "./base.layout.astro";
-
-// const { frontmatter } = Astro.props;
+import PageLayout from "./page.astro"
+const { title } = Astro.props;
 ---
 
-<BaseLayout title={frontmatter.title}>
-  <Header />
-
+<PageLayout title={title}>
   <div class="wrap">Hello</div>
-
-  <Footer />
-</BaseLayout>
+</PageLayout>

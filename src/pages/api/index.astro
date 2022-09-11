@@ -1,17 +1,13 @@
 ---
-import Footer from "../../components/footer.svelte";
-import Header from "../../components/header.svelte";
 import ApiIndexPage from "../../components/api-index-page.svelte";
-import BaseLayout from "../../layouts/base.layout.astro";
+import PageLayout from "../../layouts/page-layout.astro";
+import { makeApiEntity,packApiEntities } from "../../lib";
 import type { ApiEntity } from "../../models";
-import { makeApiEntity, packApiEntities } from "../../lib";
 
 const entityFiles = (await Astro.glob<ApiEntity>("./**/*.md")).map((f) => makeApiEntity(f));
 const apiPackages = packApiEntities(entityFiles);
 ---
 
-<BaseLayout title="API">
-  <Header />
+<PageLayout title="API">
   <ApiIndexPage apiPackages={apiPackages} client:load />
-  <Footer />
-</BaseLayout>
+</PageLayout>

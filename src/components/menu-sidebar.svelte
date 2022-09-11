@@ -1,13 +1,14 @@
 <script lang="ts">
   import type { MenuItem } from "../models";
+  import { menuSidebarLinks } from "../static-data";
 
-  export let menuItems: readonly MenuItem[] = [];
+  export let links: readonly MenuItem[] = menuSidebarLinks;
   export let currentPagePathname: string;
 </script>
 
 <div>
   <ul class="flex flex-col gap-2">
-    {#each menuItems as item}
+    {#each links as item}
       {#if item.type === "GROUP"}
         <li>
           <details open>
