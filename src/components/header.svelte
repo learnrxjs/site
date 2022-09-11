@@ -12,7 +12,7 @@ import Icon from "./icon.svelte";
       <nav class="hidden md:block">
         <ul class="flex items-center gap-8">
           <li>
-            <a class=" text-gray-500 hover:text-pink-500" href="/overview">Введение</a>
+            <a class=" text-gray-500 hover:text-pink-500" href="/guide/overview">Введение</a>
           </li>
           <li>
             <a class=" text-gray-500 hover:text-pink-500" href="/api">API</a>

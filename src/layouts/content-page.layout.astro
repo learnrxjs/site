@@ -1,73 +1,74 @@
 ---
-import { When, For } from "@astropub/flow";
 import BaseLayout from "./base.layout.astro";
 import Header from "../components/header.svelte";
 import Footer from "../components/footer.svelte";
-import TranslateString from "../components/translate-string.svelte";
+import MenuSidebar from "../components/menu-sidebar.svelte";
+import type { MenuItem } from "../models";
 
-interface MainMenuItem {
-  title: string;
-  url: string;
-}
-
-interface MainMenuGroup {
-  title: string;
-  items: MainMenuItem[];
-}
-
-const menu: (MainMenuGroup | MainMenuItem)[] = [
+const menuItems: readonly MenuItem[] = [
   {
+    type: "GROUP",
     title: "Обзор",
-    items: [
+    links: [
       {
+        type: "LINK",
         title: "Введение",
         url: "/guide/overview",
       },
       {
+        type: "LINK",
         title: "Потоки",
         url: "/guide/observables",
       },
       {
+        type: "LINK",
         title: "Наблюдатель",
         url: "/guide/observer",
       },
       {
+        type: "LINK",
         title: "Операторы",
         url: "/guide/operators",
       },
       {
+        type: "LINK",
         title: "Подписки",
         url: "/guide/subscription",
       },
       {
+        type: "LINK",
         title: "Сабжекты",
         url: "/guide/subject",
       },
       {
+        type: "LINK",
         title: "Шедулеры",
         url: "/guide/schediler",
       },
       {
+        type: "LINK",
         title: "Marble тестирование",
         url: "/guide/testing/marble-testing",
       },
     ],
   },
   {
+    type: "LINK",
     title: "Установка",
     url: "/guide/installation",
   },
   {
+    type: "LINK",
     title: "Импортинг",
     url: "/guide/importing",
   },
 ];
 
-const { title, headings, frontmatter } = Astro.props;
+const { frontmatter, headings } = Astro.props;
 const currentPagePathname = new URL(Astro.request.url).pathname;
 ---
 
-<BaseLayout title={title}>
+<BaseLayout title={frontmatter.title}>
   <Header />
 
   <div class="wrap">
@@ -75,92 +76,19 @@ const currentPagePathname = new URL(Astro.request.url).pathname;
       class="sm:grid sm:grid-cols-[1fr_1fr_1fr] items-stretch justify-center"
     >
       <aside class="hidden sm:block border-r py-12 pr-8">
-        <div>
-          <ul class="flex flex-col gap-2">
-            <For of={menu}>
-              {
-                (item: any) => {
-                  const isGroup: boolean = Reflect.has(item, "items");
-
-                  if (isGroup) {
-                    return (
-                      <li>
-                        <details open>
-                          <summary class="font-bold uppercase select-none cursor-pointer">
-                            {item.title}
-                          </summary>
-
-                          <ul>
-                            <For of={item.items}>
-                              {(link: any) => {
-                                return (
-                                  <li>
-                                    <a
-                                      class:list={[
-                                        "sidebar-link",
-                                        {
-                                          "is-active":
-                                            link.url.endsWith(
-                                              currentPagePathname
-                                            ),
-                                        },
-                                      ]}
-                                      href={link.url}
-                                    >
-                                      {link.title}
-                                    </a>
-                                  </li>
-                                );
-                              }}
-                            </For>
-                          </ul>
-                        </details>
-                      </li>
-                    );
-                  }
-
-                  return (
-                    <li>
-                      <a class="sidebar-link" href={item.url}>
-                        {item.title}
-                      </a>
-                    </li>
-                  );
-                }
-              }
-            </For>
-          </ul>
-        </div>
+        <MenuSidebar
+          menuItems={menuItems}
+          currentPagePathname={currentPagePathname}
+        />
       </aside>
 
       <div class="p-4 sm:py-12 sm:px-16">
         <article class="max-w-[70ch]">
           <div class="flex flex-col gap-2 mb-8">
             <h1 class="text-4xl font-bold">{frontmatter.title}</h1>
-            <ul class="flex gap-2 text-xs">
-              <li>
-                <span
-                  class="bg-green-700 text-white px-2 py-1 rounded select-none uppercase"
-                >
-                  <TranslateString key={`entities.kind.${frontmatter.kind.toLowerCase()}`} />
-                </span>
-              </li>
-              <li>
-                <span
-                  class="text-white px-2 py-1 rounded select-none bg-zinc-500 uppercase"
-                  ><TranslateString key={`entities.status.${frontmatter.status.toLowerCase()}`} /></span>
-              </li>
-              <When {frontmatter.isOperator}>
-                <li>
-                  <span class="text-white px-2 py-1 rounded select-none bg-red-500 uppercase">
-                    <TranslateString key="entities.status.operator" />
-                  </span>
-                </li>
-              </When>
-            </ul>
           </div>
 
-          <div class="prose dark:prose-invert prose-a:break-words">
+          <div class="prose prose-a:break-words">
             <slot />
           </div>
         </article>

@@ -1,7 +1,75 @@
 ---
-import BaseLayout from "../layouts/base.layout.astro"
+import { When, For } from "@astropub/flow";
+import BaseLayout from "../layouts/base.layout.astro";
+import Header from "../components/header.svelte";
+import Footer from "../components/footer.svelte";
+import TranslateString from "../components/translate-string.svelte";
+
+interface MainMenuItem {
+  title: string;
+  url: string;
+}
+
+interface MainMenuGroup {
+  title: string;
+  items: MainMenuItem[];
+}
+
+const menu: (MainMenuGroup | MainMenuItem)[] = [
+  {
+    title: "Обзор",
+    items: [
+      {
+        title: "Введение",
+        url: "/guide/overview",
+      },
+      {
+        title: "Потоки",
+        url: "/guide/observables",
+      },
+      {
+        title: "Наблюдатель",
+        url: "/guide/observer",
+      },
+      {
+        title: "Операторы",
+        url: "/guide/operators",
+      },
+      {
+        title: "Подписки",
+        url: "/guide/subscription",
+      },
+      {
+        title: "Сабжекты",
+        url: "/guide/subject",
+      },
+      {
+        title: "Шедулеры",
+        url: "/guide/schediler",
+      },
+      {
+        title: "Marble тестирование",
+        url: "/guide/testing/marble-testing",
+      },
+    ],
+  },
+  {
+    title: "Установка",
+    url: "/guide/installation",
+  },
+  {
+    title: "Импортинг",
+    url: "/guide/importing",
+  },
+]
 ---
 
-<BaseLayout title="Тест">
-	<p>Hello</p>
+<BaseLayout title="Hello">
+  <Header />
+	<main class="py-12 px-8">
+		<div class="wrap">
+			hello
+		</div>
+	</main>
+  <Footer />
 </BaseLayout>
