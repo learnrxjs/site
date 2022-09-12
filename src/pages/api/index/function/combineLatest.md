@@ -5,6 +5,11 @@ packageName: index
 isOperator: false
 status: STABLE
 kind: FUNCTION
+translate:
+  sourceUrl: https://rxjs.dev/api/index/function/combineLatest
+  title: combineLatest
+contributorNicknames:
+  - mephistorine
 ---
 
 ## Сигнатура

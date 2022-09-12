@@ -7,6 +7,11 @@ export interface ApiEntityFrontmatter {
   isOperator: boolean
   status: ApiEntityStatus
   kind: ApiEntityKind
+  contributorNicknames: readonly string[]
+  translate: {
+    sourceUrl: string
+    title: string
+  }
 }
 
 export interface ApiEntity extends ApiEntityFrontmatter {

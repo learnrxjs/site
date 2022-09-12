@@ -1,11 +1,34 @@
 ---
-import { When } from "@astropub/flow";
+import { For, When } from "@astropub/flow";
+
+import type { ApiEntityFrontmatter, User } from "../models";
+
 import MenuSidebar from "../components/menu-sidebar.svelte";
 import TranslateString from "../components/translate-string.svelte";
 import PageLayout from "./page-layout.astro";
 
-const { title, headings, frontmatter } = Astro.props;
+import { USERS } from "../static-data";
+
+interface Props {
+  title: string;
+  headings: unknown[];
+  frontmatter: ApiEntityFrontmatter;
+}
+
+const { title, headings, frontmatter } = Astro.props as Props;
 const currentPagePathname = new URL(Astro.request.url).pathname;
+
+const contributors: readonly User[] = frontmatter.contributorNicknames.map<User>(
+  (nickname: string) => {
+    if (!Reflect.has(USERS, nickname)) {
+      throw new TypeError(
+        `Не известный автор с никнеймом="${nickname}". Сначала нужно добавить его в список всех авторов`
+      );
+    }
+
+    return Reflect.get(USERS, nickname);
+  }
+);
 ---
 
 <PageLayout title={title}>
@@ -17,8 +40,8 @@ const currentPagePathname = new URL(Astro.request.url).pathname;
         <MenuSidebar currentPagePathname={currentPagePathname} />
       </aside>
 
-      <div class="p-4 sm:py-12 sm:px-16">
-        <article class="max-w-[70ch]">
+      <div>
+        <article class="max-w-[70ch] p-4 sm:py-12 sm:px-16">
           <div class="flex flex-col gap-2 mb-8">
             <h1 class="text-4xl font-bold">{frontmatter.title}</h1>
             <ul class="flex gap-2 text-xs">
@@ -55,6 +78,21 @@ const currentPagePathname = new URL(Astro.request.url).pathname;
             <slot />
           </div>
         </article>
+
+        <div class="flex flex-col gap-4 border-t p-4 sm:py-12 sm:px-16">
+          <h2 class="text-2xl font-bold">Контрибьюторы</h2>
+
+          <ul class="grid gap-4 grid-cols-3">
+            <For items={contributors}>{(contributor) => (
+              <li class="flex gap-2 items-center">
+                <img class="object-cover w-8 h-8 rounded-full" src={contributor.avatarUrl} alt={`Аватар контрибютора ${ contributor.name }`}>
+                <span class="text-lg">
+                  <a class="like-link" href={`/authors/${ contributor.nickname }`}>{contributor.name}</a>
+                </span>
+              </li>
+            )}</For>
+          </ul>
+        </div>
       </div>
 
       <aside class="hidden sm:block border-l py-12 pl-8">
