@@ -18,17 +18,25 @@ interface Props {
 const { title, headings, frontmatter } = Astro.props as Props;
 const currentPagePathname = new URL(Astro.request.url).pathname;
 
-const contributors: readonly User[] = frontmatter.contributorNicknames.map<User>(
-  (nickname: string) => {
-    if (!Reflect.has(USERS, nickname)) {
-      throw new TypeError(
-        `Не известный автор с никнеймом="${nickname}". Сначала нужно добавить его в список всех авторов`
-      );
+const contributors: readonly User[] = frontmatter.contributorNicknames
+  .reduce<string[]>((acc, curr) => {
+    if (!acc.includes(curr)) {
+      acc.push(curr)
     }
 
-    return Reflect.get(USERS, nickname);
-  }
-);
+    return acc
+  }, [])
+  .map<User>(
+    (nickname: string) => {
+      if (!Reflect.has(USERS, nickname)) {
+        throw new TypeError(
+          `Не известный автор с никнеймом="${nickname}". Сначала нужно добавить его в список всех авторов`
+        );
+      }
+
+      return Reflect.get(USERS, nickname);
+    }
+  );
 ---
 
 <PageLayout title={title}>
