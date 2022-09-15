@@ -1,5 +1,6 @@
 ---
 import { For, When } from "@astropub/flow";
+import { Debug } from "astro/components"
 
 import type { ApiEntityFrontmatter, User } from "../models";
 
@@ -15,7 +16,7 @@ interface Props {
   frontmatter: ApiEntityFrontmatter;
 }
 
-const { title, headings, frontmatter } = Astro.props as Props;
+const { headings, frontmatter } = Astro.props as Props;
 const currentPagePathname = new URL(Astro.request.url).pathname;
 
 const contributors: readonly User[] = frontmatter.contributorNicknames
@@ -30,7 +31,7 @@ const contributors: readonly User[] = frontmatter.contributorNicknames
     (nickname: string) => {
       if (!Reflect.has(USERS, nickname)) {
         throw new TypeError(
-          `Не известный автор с никнеймом="${nickname}". Сначала нужно добавить его в список всех авторов`
+          `Не известный контрибютор с никнеймом="${nickname}". Сначала нужно добавить его в список всех контрибюторов`
         );
       }
 
@@ -39,7 +40,7 @@ const contributors: readonly User[] = frontmatter.contributorNicknames
   );
 ---
 
-<PageLayout title={title}>
+<PageLayout title={frontmatter.title}>
   <div class="wrap">
     <main
       class="sm:grid sm:grid-cols-[1fr_1fr_1fr] items-stretch justify-center"

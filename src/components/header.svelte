@@ -3,7 +3,6 @@
   import { headerMenuLinks } from "../static-data"
 
   export let currentPagePathname: string
-  $: console.log(currentPagePathname)
 </script>
 
 <header class="border-b py-4 px-8">
