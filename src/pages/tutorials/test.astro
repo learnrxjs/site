@@ -108,7 +108,18 @@ const currentPagePathname = new URL(Astro.request.url).pathname;
       </div>
     </div>
     <div class="editor border-b p-4">Editor</div>
-    <div class="result p-4">Result</div>
+    <div class="result flex flex-col">
+      <header class="flex justify-between border-b px-4 py-2">
+        <h3>Результат</h3>
+        <button class="p-1 hover:bg-gray-200 border border-gray-200 rounded flex gap-2 items-center">
+          <span class="block max-w-[1em]"><Icon name="arrow-clockwise" /></span>
+        </button>
+      </header>
+
+      <div class="flex-grow">
+        <iframe class="w-full h-full box-border" src="https://en.wikipedia.org/wiki/Anime" frameborder="0"></iframe>
+      </div>
+    </div>
   </main>
 </BaseLayout>
 
