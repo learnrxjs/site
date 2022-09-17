@@ -70,14 +70,14 @@ export const headerMenuLinks: readonly MenuLink[] = [
     title: "API",
     url: "/api"
   },
-  {
+  /* {
     type: "LINK",
     title: "Блог",
     url: "/blog"
-  },
+  }, */
   {
     type: "LINK",
-    title: "Туториал",
-    url: "/tour"
+    title: "Руководства",
+    url: "/tutorials"
   }
 ]
