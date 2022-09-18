@@ -3,6 +3,7 @@
 
   export let resizeTargetId: string | null = null;
   export let resizeAxis: "X" | "Y" | null = null;
+  export let resizeBarPosition: "BLOCK_START" | "BLOCK_END" | "INLINE_START" | "INLINE_END"
 
   const eventDispatcher = createEventDispatcher();
 
@@ -30,6 +31,10 @@
       return;
     }
 
+    /**
+     * NOTE: Нужно, чтобы браузере сказать следить
+     * за курсором, чтобы его нельзя было отпустить случайно
+    */
     resizeBarRef.setPointerCapture(event.pointerId);
 
     const { right, left, top, bottom }: DOMRect =
@@ -48,9 +53,10 @@
       }
 
       resizeRequestAnimationFrameId = requestAnimationFrame(() => {
+        console.log(oldSize, clientY, bottom)
         const newSize: number = Math.max(
           0,
-          isResizeAxisX ? oldSize + clientX - right : oldSize - clientY + top
+          isResizeAxisX ? oldSize + clientX - right : oldSize + clientY - bottom
         );
 
         eventDispatcher("resize", newSize);
@@ -72,9 +78,10 @@
 </script>
 
 <div
-  class="absolute hover:bg-pink-500 cursor-col-resize transition"
+  class="absolute hover:bg-pink-500 transition"
   bind:this={resizeBarRef}
   data-resize-axis={resizeAxis}
+  data-resize-bar-position={resizeBarPosition}
   on:pointerover={onPointerOver}
   on:pointerleave={onPointerLeave}
   on:pointerdown={onPointerDown}
@@ -82,10 +89,26 @@
 
 <style>
   [data-resize-axis="X"] {
-    @apply top-0 -right-1 w-1 h-full
+    @apply cursor-col-resize
   }
 
   [data-resize-axis="Y"] {
+    @apply cursor-row-resize
+  }
+  
+  [data-resize-axis="X"][data-resize-bar-position="INLINE_START"] {
+    @apply top-0 -left-1 w-1 h-full
+  }
+
+  [data-resize-axis="X"][data-resize-bar-position="INLINE_END"] {
+    @apply top-0 -right-1 w-1 h-full
+  }
+
+  [data-resize-axis="Y"][data-resize-bar-position="BLOCK_START"] {
     @apply left-0 -top-1 w-full h-1
+  }
+
+  [data-resize-axis="Y"][data-resize-bar-position="BLOCK_END"] {
+    @apply left-0 -bottom-1 w-full h-1
   }
 </style>

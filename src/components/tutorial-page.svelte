@@ -1,19 +1,22 @@
 <script lang="ts">
-  import { writable } from "svelte/store";
+  import { Writable, writable } from "svelte/store";
   import Icon from "./icon.svelte";
   import ResizeBar from "./resize-bar.svelte";
 
-  const width = writable(500);
+  const contentWidth: Writable<string> = writable("500px");
+  const editorHeight: Writable<string> = writable("1fr");
 
-  const onResize = (event: CustomEvent<number>) => width.set(event.detail);
+  const onContentResize = (event: CustomEvent<number>) => contentWidth.set(`${event.detail}px`);
+  const onEditorResize = (event: CustomEvent<number>) => editorHeight.set(`${event.detail}px`);
 </script>
 
 <main
   class="absolute h-[calc(100%-61px)] w-full top-[61px] left-0 box-border tutorial-container"
-  style:--content-size={$width + "px"}
+  style:--content-size={$contentWidth}
+  style:--editor-size={$editorHeight}
 >
   <div id="content" class="content border-r relative">
-    <ResizeBar resizeAxis="X" resizeTargetId="content" on:resize={onResize} />
+    <ResizeBar resizeAxis="X" resizeTargetId="content" resizeBarPosition="INLINE_END" on:resize={onContentResize} />
 
     <div class="h-full overflow-y-auto">
       <header class="flex justify-between sticky top-0 z-10 bg-white px-4 py-2">
@@ -115,7 +118,9 @@
       </footer>
     </div>
   </div>
-  <div class="editor border-b p-4">Editor</div>
+  <div id="editor" class="editor relative border-b p-4">
+    <ResizeBar resizeAxis="Y" resizeTargetId="editor" resizeBarPosition="BLOCK_END" on:resize={onEditorResize} />
+  </div>
   <div class="result flex flex-col">
     <header class="flex justify-between border-b px-4 py-2">
       <h3>Результат</h3>
@@ -140,7 +145,7 @@
   .tutorial-container {
     display: grid;
     grid-template-columns: var(--content-size, 500px) 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: var(--editor-size, 1fr) 1fr;
     gap: 0px 0px;
     grid-auto-flow: row;
     grid-template-areas:
