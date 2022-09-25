@@ -1,13 +1,79 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { Writable, writable } from "svelte/store";
+  import EditorTabs from "./editor-tabs.svelte";
   import Icon from "./icon.svelte";
   import ResizeBar from "./resize-bar.svelte";
+
+  import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
+  import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
+  import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker';
+    import Editor from "./editor.svelte";
+
+  let editorElementRef: HTMLDivElement | null = null;
 
   const contentWidth: Writable<string> = writable("500px");
   const editorHeight: Writable<string> = writable("1fr");
 
-  const onContentResize = (event: CustomEvent<number>) => contentWidth.set(`${event.detail}px`);
-  const onEditorResize = (event: CustomEvent<number>) => editorHeight.set(`${event.detail}px`);
+  const onContentResize = (event: CustomEvent<number>) =>
+    contentWidth.set(`${event.detail}px`);
+  const onEditorResize = (event: CustomEvent<number>) =>
+    editorHeight.set(`${event.detail}px`);
+
+  onMount(() => {
+    if (editorElementRef === null) {
+      return;
+    }
+
+    window.MonacoEnvironment = {
+      getWorker: (_moduleId: unknown, label: string) => {
+        switch (label) {
+          case "javascript":
+          case "typescript": {
+            // @ts-ignore
+            return new tsWorker()
+          }
+          case "css": {
+            // @ts-ignore
+            return new cssWorker()
+          }
+          default: {
+            // @ts-ignore
+            return new editorWorker()
+          }
+        }
+      }
+    }
+
+    import("monaco-editor").then(async ({ editor, KeyMod, KeyCode, Uri }) => {
+      const ed = editor.create(editorElementRef, {
+        lineNumbers: "on",
+        value: `Hello...`,
+        automaticLayout: true,
+        fontSize: "15px",
+        fontFamily: "Cascadia Code, monospace",
+        fontLigatures: true,
+        minimap: {
+          enabled: false,
+        },
+        lineDecorationsWidth: 5,
+        lineNumbersMinChars: 3,
+        padding: { top: 15 },
+      });
+
+      ed.addCommand(KeyMod.CtrlCmd | KeyCode.KeyS, () => {
+        ed?.getAction("editor.action.formatDocument").run();
+        ed?.focus();
+      });
+
+      ed.onDidChangeModelContent((event) => {
+        
+      })
+
+      const model = editor.getModel(Uri.parse("file:///tutorial/index.ts"))
+      console.log(model)
+    });
+  });
 </script>
 
 <main
@@ -16,10 +82,15 @@
   style:--editor-size={$editorHeight}
 >
   <div id="content" class="content border-r relative">
-    <ResizeBar resizeAxis="X" resizeTargetId="content" resizeBarPosition="INLINE_END" on:resize={onContentResize} />
+    <ResizeBar
+      resizeAxis="X"
+      resizeTargetId="content"
+      resizeBarPosition="INLINE_END"
+      on:resize={onContentResize}
+    />
 
     <div class="h-full overflow-y-auto">
-      <header class="flex justify-between sticky top-0 z-10 bg-white px-4 py-2">
+      <header class="flex justify-between sticky top-0 z-10 bg-white px-4 py-2 border-b">
         <div class="flex items-center gap-2">
           <h2 class="font-bold">Введение в RxJS</h2>
           <span>•</span>
@@ -93,7 +164,7 @@
         </div>
       </article>
 
-      <footer class="px-4 py-2 flex items-center flex-wrap gap-2">
+      <footer class="px-4 py-2 flex items-center flex-wrap gap-2 border-t">
         <div class="flex items-center gap-2">
           <button
             class="px-2 py-1 hover:bg-gray-200 border border-gray-200 rounded flex gap-2 items-center"
@@ -118,8 +189,19 @@
       </footer>
     </div>
   </div>
-  <div id="editor" class="editor relative border-b p-4">
-    <ResizeBar resizeAxis="Y" resizeTargetId="editor" resizeBarPosition="BLOCK_END" on:resize={onEditorResize} />
+  <div id="editor-container" class="editor relative border-b">
+    <ResizeBar
+      resizeAxis="Y"
+      resizeTargetId="editor-container"
+      resizeBarPosition="BLOCK_END"
+      on:resize={onEditorResize}
+    />
+
+    <div class="border-b">
+      <EditorTabs />
+    </div>
+
+    <div class="h-[calc(100%-39px)] min-h-0 editor-instance" bind:this={editorElementRef} />
   </div>
   <div class="result flex flex-col">
     <header class="flex justify-between border-b px-4 py-2">
@@ -132,11 +214,11 @@
     </header>
 
     <div class="flex-grow">
-      <iframe
+      <!-- <iframe
         class="w-full h-full box-border"
-        src="https://en.wikipedia.org/wiki/Anime"
+        src="https://mephi.dev"
         frameborder="0"
-      />
+      /> -->
     </div>
   </div>
 </main>

@@ -53,7 +53,6 @@
       }
 
       resizeRequestAnimationFrameId = requestAnimationFrame(() => {
-        console.log(oldSize, clientY, bottom)
         const newSize: number = Math.max(
           0,
           isResizeAxisX ? oldSize + clientX - right : oldSize + clientY - bottom
@@ -78,7 +77,7 @@
 </script>
 
 <div
-  class="absolute hover:bg-pink-500 transition"
+  class="absolute hover:bg-pink-500 transition z-10"
   bind:this={resizeBarRef}
   data-resize-axis={resizeAxis}
   data-resize-bar-position={resizeBarPosition}
