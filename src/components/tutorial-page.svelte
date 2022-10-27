@@ -4,6 +4,7 @@
   import ResizeBar from "./resize-bar.svelte";
 
   import Editor from "./editor.svelte";
+    import type { EditorFile } from "../models";
 
   let editorElementRef: HTMLDivElement | null = null;
 
@@ -14,6 +15,21 @@
     contentWidth.set(`${event.detail}px`);
   const onEditorResize = (event: CustomEvent<number>) =>
     editorHeight.set(`${event.detail}px`);
+
+  const files: EditorFile[] = [
+    {
+      name: "index.html",
+      content: `<body>\n  <h1>Hello</h1>\n</body>`
+    },
+    {
+      name: "index.ts",
+      content: `const hello = document.querySelector("hello")\n\nhello.innerHTML = "Hello"`
+    }
+  ]
+
+  const onTabContentChange = (event) => {
+    console.debug(event)
+  }
 </script>
 
 <main
@@ -89,7 +105,7 @@
       on:resize={onEditorResize}
     />
 
-    <Editor />
+    <Editor {files} on:tab-content-change={onTabContentChange} />
   </div>
   <div class="result flex flex-col">
     <header class="flex justify-between border-b px-4 py-2">

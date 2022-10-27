@@ -2,11 +2,13 @@
   import { createEventDispatcher } from "svelte"
   import { get, writable, Writable } from "svelte/store";
   import { connectWriteable } from "../directives";
-  import type { EditorTabData } from "../models";
   import Icon from "./icon.svelte";
 
-  export let tabNames: EditorTabData[] = [];
-  export let activeTabName: string = "index.html";
+  export let tabNames: string[] = [];
+  export let activeTabName: string;
+  /**
+   * @deprecated
+   */
   export let readonly: boolean = false;
 
   let editTabName: string | null = null;
