@@ -4,11 +4,9 @@ import svelte from "@astrojs/svelte";
 import { rehypeHeadings } from './src/utils';
 // import monacoEditorPlugin from 'vite-plugin-monaco-editor';
 
-import solidJs from "@astrojs/solid-js";
-
 // https://astro.build/config
 export default defineConfig({
-  integrations: [tailwind(), svelte(), solidJs()],
+  integrations: [tailwind(), svelte()],
   markdown: {
     rehypePlugins: [// "rehype-slug",
     rehypeHeadings]
