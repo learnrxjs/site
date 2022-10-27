@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "astro dev --port 4673",
+    "start": "astro dev --port 8000",
     "start:open": "astro dev --host",
     "build": "astro build",
     "preview": "astro preview",
@@ -19,7 +19,9 @@
     "astro": "^1.1.2",
     "slug": "^8.0.0",
     "svelte": "^3.49.0",
-    "unist-util-visit": "^4.1.1"
+    "tailwindcss": "^3.1.8",
+    "unist-util-visit": "^4.1.1",
+    "vite-plugin-monaco-editor": "^1.1.0"
   },
   "dependencies": {
     "monaco-editor": "^0.34.0"

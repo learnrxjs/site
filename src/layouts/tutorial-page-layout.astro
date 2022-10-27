@@ -1,0 +1,14 @@
+---
+import BaseLayout from "./base.layout.astro";
+import Header from "../components/header.svelte";
+import TutorialPage from "../components/tutorial-page.svelte";
+const currentPagePathname = new URL(Astro.url).pathname;
+const { title } = Astro.props
+---
+
+<BaseLayout title={title}>
+  <Header currentPagePathname={currentPagePathname} />
+  <TutorialPage client:load>
+    <slot />
+  </TutorialPage>
+</BaseLayout>

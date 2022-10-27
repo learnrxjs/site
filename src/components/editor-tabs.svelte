@@ -1,57 +1,67 @@
 <script lang="ts">
+  import { createEventDispatcher } from "svelte"
   import { get, writable, Writable } from "svelte/store";
-    import { connectWriteable } from "../directives";
+  import { connectWriteable } from "../directives";
+  import type { EditorTabData } from "../models";
   import Icon from "./icon.svelte";
 
-  export let tabNames: string[] = ["index.html", "index.ts", "index.css"];
-  export let activeTabName: string = "index.html"
-  
-  let editTabName: string | null = null
-  let editTabNameValue: Writable<string | null> = writable(null)
+  export let tabNames: EditorTabData[] = [];
+  export let activeTabName: string = "index.html";
+  export let readonly: boolean = false;
+
+  let editTabName: string | null = null;
+  let editTabNameValue: Writable<string | null> = writable(null);
+
+  const dispatcher = createEventDispatcher()
 
   const onClickTab = (tabName: string) => {
-    activeTabName = tabName
-  }
+    activeTabName = tabName;
+    dispatcher("activeTabChange", activeTabName)
+  };
 
   const onDoubleClickTab = (tabName: string) => {
-    editTabNameValue.set(tabName)
-    editTabName = tabName
-  }
-
-  const onBlurInput = () => {
-    saveTabName()
-  }
-
-  const onKeyDownInput = (event: KeyboardEvent) => {
-    if (event.key !== "Enter") {
+    if (readonly) {
       return
     }
 
-    saveTabName()
-  }
+    editTabNameValue.set(tabName);
+    editTabName = tabName;
+  };
+
+  const onBlurInput = () => {
+    saveTabName();
+  };
+
+  const onKeyDownInput = (event: KeyboardEvent) => {
+    if (event.key !== "Enter") {
+      return;
+    }
+
+    saveTabName();
+  };
 
   const saveTabName = () => {
-    debugger
-    const oldTabName: string = activeTabName
-    const oldTabNameIndex = tabNames.indexOf(oldTabName)
-    const newTabName: string = get(editTabNameValue) as string
-    const newTabNames = tabNames.slice()
-    newTabNames[ oldTabNameIndex ] = newTabName
-    tabNames = newTabNames
-    activeTabName = newTabName
+    const oldTabName: string = activeTabName;
+    const oldTabNameIndex = tabNames.indexOf(oldTabName);
+    const newTabName: string = get(editTabNameValue) as string;
+    const newTabNames = tabNames.slice();
+    newTabNames[oldTabNameIndex] = newTabName;
+    tabNames = newTabNames;
+    activeTabName = newTabName;
+    dispatcher("activeTabChange", activeTabName)
 
-    editTabNameValue.set(null)
-    editTabName = null
-  }
+    editTabNameValue.set(null);
+    editTabName = null;
+  };
 
   const onClickCloseButton = (tabName: string) => {
-    tabNames = tabNames.filter((t) => t !== tabName)
-  }
+    tabNames = tabNames.filter((t) => t !== tabName);
+  };
 
   const onClickAddButton = () => {
-    const newTabName: string = `tab-${ tabNames.length + 1 }.ts`
-    tabNames = [ ...tabNames, newTabName ]
-  }
+    const newTabName: string = `tab-${tabNames.length + 1}.ts`;
+    tabNames = [...tabNames, newTabName];
+  };
 </script>
 
 <ul class="flex items-center">
@@ -75,28 +85,38 @@
         {:else}
           <span class="leading-none select-none">{tabName}</span>
         {/if}
-        <button on:click|stopPropagation={() => onClickCloseButton(tabName)} class="close-button block w-[1.2em] p-[3px] rounded hover:bg-gray-200"><Icon name="close" /></button>
+        {#if !readonly}
+          <button
+            on:click|stopPropagation={() => onClickCloseButton(tabName)}
+            class="close-button block w-[1.2em] p-[3px] rounded hover:bg-gray-200"
+          ><Icon name="close" /></button
+          >
+        {/if}
       </button>
     </li>
   {/each}
-  <li>
-    <button on:click={onClickAddButton} class="p-2">
-      <span class="block p-[3px] w-[1.2em] rounded hover:bg-gray-200"><Icon name="add" /></span>
-    </button>
-  </li>
+  {#if !readonly}
+    <li>
+      <button on:click={onClickAddButton} class="p-2">
+        <span class="block p-[3px] w-[1.2em] rounded hover:bg-gray-200"
+          ><Icon name="add" /></span
+        >
+      </button>
+    </li>
+  {/if}
 </ul>
 
 <style>
   .tab-button:hover .close-button,
   .tab-button.is-active .close-button {
-    @apply visible
+    @apply visible;
   }
 
   .close-button {
-    @apply invisible
+    @apply invisible;
   }
 
   .is-active {
-    @apply bg-white border-t-2 border-t-pink-500
+    @apply bg-white border-t-2 border-t-pink-500;
   }
 </style>

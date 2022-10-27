@@ -1,0 +1,12 @@
+{
+  "files": [
+    {
+      "name": "index.html",
+      "content": "<h1></h1>"
+    },
+    {
+      "name": "index.ts",
+      "content": "console.log(\"Hello\")"
+    }
+  ]
+}
