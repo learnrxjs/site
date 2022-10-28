@@ -4,17 +4,35 @@
   import ResizeBar from "./resize-bar.svelte";
 
   import Editor from "./editor.svelte";
-    import type { EditorFile } from "../models";
+  import type { EditorFile } from "../models";
+  import { onMount } from "svelte";
 
-  let editorElementRef: HTMLDivElement | null = null;
+  let iframeElementRef: HTMLIFrameElement | null = null
 
   const contentWidth: Writable<string> = writable("500px");
   const editorHeight: Writable<string> = writable("1fr");
+  const src = writable("")
 
-  const onContentResize = (event: CustomEvent<number>) =>
-    contentWidth.set(`${event.detail}px`);
-  const onEditorResize = (event: CustomEvent<number>) =>
-    editorHeight.set(`${event.detail}px`);
+  onMount(() => {
+    const html: string = `<html>
+      <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/modern-normalize/modern-normalize.min.css">
+      </head>
+      <body>
+        <h1>Hello</h1>
+      </body>
+    </html>`
+    
+    const blob = new Blob([ html ], { type: 'text/html' })
+    const srcResult = URL.createObjectURL(blob)
+    src.set(srcResult)
+
+    return () => URL.revokeObjectURL(srcResult)
+  })
+
+  const onContentResize = (event: CustomEvent<number>) => contentWidth.set(`${event.detail}px`);
+  const onEditorResize = (event: CustomEvent<number>) => editorHeight.set(`${event.detail}px`);
 
   const files: EditorFile[] = [
     {
@@ -27,8 +45,12 @@
     }
   ]
 
-  const onTabContentChange = (event) => {
-    console.debug(event)
+  const onTabContentChange = (event: CustomEvent<any>) => {
+    const file = files.find((s) => s.name === event.detail.name)
+
+    if (typeof file !== "undefined") {
+      file.content = event.detail.newContent
+    }
   }
 </script>
 
@@ -118,11 +140,14 @@
     </header>
 
     <div class="flex-grow">
-      <!-- <iframe
+      <iframe
+        title="RxJS Tutorial Sandbox"
         class="w-full h-full box-border"
-        src="https://mephi.dev"
         frameborder="0"
-      /> -->
+        bind:this={iframeElementRef}
+        src={$src}
+        sandbox="allow-popups-to-escape-sandbox allow-scripts allow-popups allow-forms allow-pointer-lock allow-top-navigation allow-modals allow-same-origin"
+      />
     </div>
   </div>
 </main>
